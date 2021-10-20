@@ -1,6 +1,8 @@
 package com.example.koszykowka3p;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,15 +16,19 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private SharedPreferences punktySharedPrefences;
     private int punkty=0;
+    private PunktyViewModel punktyViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding=ActivityMainBinding
                 .inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        punktySharedPrefences = getPreferences(MODE_PRIVATE);
-        punkty=odczytajPunkty();
+        punktyViewModel = new ViewModelProvider(this).get(PunktyViewModel.class);
+        punkty = punktyViewModel.punkty;
+        //punktySharedPrefences = getPreferences(MODE_PRIVATE);
+        //punkty=odczytajPunkty();
         binding.textView.setText(Integer.toString(punkty));
         binding.button
                 .setOnClickListener(new View.OnClickListener() {
@@ -46,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void dodajPunkty(int i){
-        punkty=punkty+i;
-        binding.textView.setText(Integer.toString(punkty));
+        punktyViewModel.punkty +=i;
+        binding.textView.setText(Integer.toString(punktyViewModel.punkty));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        zapiszPunkty();
+        //zapiszPunkty();
     }
 
     private void zapiszPunkty(){
